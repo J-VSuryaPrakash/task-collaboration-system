@@ -1,6 +1,7 @@
 import { sequelize } from "../db/index.js";
 import { DataTypes } from "sequelize";
 import User from "./users.model.js";
+import Team from "./teams.model.js";
 
 const Project = sequelize.define('Project', 
     {
@@ -35,6 +36,15 @@ Project.belongsTo(User, {
         allowNull: true
     },
     targetKey: "id",
+    onDelete: "SET NULL"
+})
+
+Project.belongsTo(Team,{
+    foreignKey:{
+        name: 'teamId',
+        allowNull: true
+    },
+    targetKey: 'id',
     onDelete: "SET NULL"
 })
 

@@ -11,6 +11,10 @@ const Team = sequelize.define('Team',
             defaultValue: DataTypes.UUIDV4,
             allowNull: false
         },
+        teamName:{
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         createdAt:{
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW
@@ -21,15 +25,6 @@ const Team = sequelize.define('Team',
         timestamps: false
     }
 );
-
-Team.belongsTo(Project,{
-    foreignKey: {
-        name: "projectId",
-        allowNull: false
-    },
-    targetKey: "id",
-    onDelete: "CASCADE"
-});
 
 Team.belongsTo(User,{
     foreignKey: {

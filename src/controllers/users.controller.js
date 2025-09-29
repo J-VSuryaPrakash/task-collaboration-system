@@ -64,16 +64,14 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
 
-    const {userName, email, password} = req.body;
+    const {email, password} = req.body;
 
-    if(!(userName || email)){
-        throw new ApiError(404,"Username or Email is required");
+    if(!email){
+        throw new ApiError(404,"Email is required");
     }
 
     const user = await User.findOne({
-        where:{
-            [Op.or]: [{userName: userName},{email: email}]
-        }
+        where:{email: email}
     })
 
     if(!user){
@@ -88,6 +86,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user.id)
 
+    await user.update({ refreshToken }, { where: { id: user.id } });
+
     return res.status(200)
     .cookie("accessToken", accessToken, {
         httpOnly: true,
@@ -98,7 +98,7 @@ const loginUser = asyncHandler(async (req, res) => {
         secure: true
     })
     .json(
-        new ApiResponse(200,{id: user.id, userName: user.userName, email: user.email, refreshToken: refreshToken, accessToken: accessToken},"User logged in successfully")
+        new ApiResponse(200,{user,refreshToken,accessToken},"User logged in successfully")
     )
 })
 
@@ -129,7 +129,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
 
     const {userName, email} = req.body;
 
-    if(!userName || !email){
+    if(!(userName || email)){
         throw new ApiError(404,"Any of the field is required");
     }
 

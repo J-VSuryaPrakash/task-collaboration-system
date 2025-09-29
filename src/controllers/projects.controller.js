@@ -85,20 +85,20 @@ const updateProject = asyncHandler(async(req, res) => {
 })
 
 
-const getAllProjects = asyncHandler(async(req, res) => {
+const getAllProjects = asyncHandler(async(req, res) => { 
 
     const userId = req.user.id;
 
-    const projectList = Project.findAll({
+    const projectList = await Project.findAll({
         where: {
             projectLead : userId
         },
-        attributes: [id,projectName,projectDescription],
+        attributes: ["id","projectName","projectDescription"],
         include: {
             model: User,
-            attributes: [id,userName]
+            attributes: ["id","userName"]
         }
-    })
+    })   
 
     if(projectList.length === 0){
         return res.status(200)

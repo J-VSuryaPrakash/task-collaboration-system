@@ -39,13 +39,4 @@ Project.belongsTo(User, {
     onDelete: "SET NULL"
 })
 
-Project.belongsTo(Team,{
-    foreignKey:{
-        name: 'teamId',
-        allowNull: true
-    },
-    targetKey: 'id',
-    onDelete: "SET NULL"
-})
-
 export default Project

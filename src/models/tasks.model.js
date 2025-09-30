@@ -48,6 +48,7 @@ Task.belongsTo(Project, {
 });
 
 Task.belongsTo(User, {
+    as:"assignedToUser",
     foreignKey: {
         name: "assignedTo",
         allowNull: true
@@ -57,6 +58,7 @@ Task.belongsTo(User, {
 });
 
 Task.belongsTo(User, {
+    as:"assignedByUser",
     foreignKey: {
         name: "assignedBy",
         allowNull: true

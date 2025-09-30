@@ -1,6 +1,6 @@
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { asyncHandler } from "../utils/asyncHandler";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import Task from "../models/tasks.model.js";
 import Project from "../models/projects.model.js";
 import User from "../models/users.model.js";
@@ -9,7 +9,7 @@ import User from "../models/users.model.js";
 const assignTask = asyncHandler(async (req, res) => {
 
     const {assignedBy} = req.user.id;
-    const {title, taskDescription, assignedTo,deadline, projectId} = req.body;
+    const {title, taskDescription, assignedTo, deadline, projectId} = req.body;
 
     if(!projectId){
         throw new ApiError(404,"Project is not found to assign task");
@@ -74,8 +74,8 @@ const updateTask = asyncHandler(async(req, res) => {
     const updatedTask = await Task.findByPk(taskId, {
         include: [
             { model: Project },
-            { model: User, as: 'assignedTo' },
-            { model: User, as: 'assignedBy' }
+            { model: User, as: 'assignedToUser',attributes:['id','userName','email','role'] },
+            { model: User, as: 'assignedByUser',attributes:['id','userName','email','role'] }
         ]
     })
 
@@ -123,12 +123,12 @@ const getTask = asyncHandler(async(req,res) => {
         },
         {
             model: User,
-            as: 'assignedTo',
+            as: 'assignedToUser',
             attributes:['id','userName']
         },
         {
             model: User,
-            as: 'assignedBy',
+            as: 'assignedByUser',
             attributes:['id','userName']
         }]    
     })

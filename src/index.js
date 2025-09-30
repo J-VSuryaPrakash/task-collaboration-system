@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import User from "./models/users.model.js";
 import Project from "./models/projects.model.js";
 import Task from "./models/tasks.model.js";
-import Team from "./models/teams.model.js";
 import Comment from "./models/comments.model.js";
 import { connectDB, sequelize } from "./db/index.js";
 

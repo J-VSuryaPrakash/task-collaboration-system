@@ -1,7 +1,6 @@
 import { sequelize } from "../db/index.js";
 import { DataTypes } from "sequelize";
 import User from "./users.model.js";
-import Team from "./teams.model.js";
 
 const Project = sequelize.define('Project', 
     {

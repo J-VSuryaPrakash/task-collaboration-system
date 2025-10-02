@@ -31,9 +31,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const userExists = await User.findOne({
-        where:{
-            [Op.or] : [{userName : userName},{email : email}]
-        }
+        where:{email:email}
     })
 
     if(userExists){

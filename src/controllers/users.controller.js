@@ -166,11 +166,25 @@ const updatePassword = asyncHandler(async(req,res) => {
             .json(new ApiResponse(200,{},"Password Updated!"))
 })
 
+const getUser = asyncHandler(async(req,res) => {
+
+    const user = await User.findByPk(req.user.id,{
+        attributes: { exclude: ['password', 'refreshToken'] }
+    });
+
+    if(!user){
+        throw new ApiError(400,"User is not found");
+    }
+
+    return res.status(200)
+            .json(new ApiResponse(200,{user},"User fetched successfully!"))
+})
 
 export {
     registerUser,
     loginUser,
     logoutUser,
     updateUserDetails,
-    updatePassword
+    updatePassword,
+    getUser
 }

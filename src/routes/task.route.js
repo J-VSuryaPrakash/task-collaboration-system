@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {assignTask, updateTask, deleteTask, getTask} from '../controllers/tasks.controller.js';
+import {assignTask, updateTask, deleteTask, getTask, fetchAllTasks} from '../controllers/tasks.controller.js';
 import verifyUser from '../middlewares/auth.middleware.js';
 
 const router = Router();
@@ -12,5 +12,6 @@ router.route("/delete-task").delete(verifyUser, deleteTask);
 
 router.route("/get-task").get(verifyUser, getTask);
 
+router.route("/fetch-all-tasks").get(verifyUser, fetchAllTasks);
 
 export default router;

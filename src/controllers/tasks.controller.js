@@ -9,7 +9,7 @@ import User from "../models/users.model.js";
 const assignTask = asyncHandler(async (req, res) => {
 
     const {assignedBy} = req.user.id;
-    const {title, taskDescription, assignedTo, deadline, projectId} = req.body;
+    const {title, taskDescription, status, assignedTo, deadline, projectId} = req.body;
 
     if(!projectId){
         throw new ApiError(404,"Project is not found to assign task");
@@ -23,6 +23,7 @@ const assignTask = asyncHandler(async (req, res) => {
         title: title,
         deadline: deadline, 
         projectId: projectId,
+        status: status,
         assignedTo: assignedTo,
         assignedBy: assignedBy,
         taskDescription: taskDescription 
@@ -39,7 +40,8 @@ const assignTask = asyncHandler(async (req, res) => {
 
 const updateTask = asyncHandler(async(req, res) => {
 
-    const {taskId, title, taskDescription, status, deadline,assignedTo} = req.body
+    const {taskId} = req.query
+    const {title, taskDescription, status, deadline,assignedTo} = req.body
     const userId = req.user.id;
 
     const taskToUpdate = await Task.findByPk(taskId,{
@@ -145,7 +147,8 @@ const fetchAllTasks = asyncHandler(async(req,res) => {
 
 const getTask = asyncHandler(async(req,res) => {
 
-    const {taskId} = req.body;
+    
+    const {taskId} = req.query;
     const userId = req.user.id;
 
     if(!userId){

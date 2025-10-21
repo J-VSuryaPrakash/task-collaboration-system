@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser"
+import { ApiError } from "./utils/ApiError.js";
 
 const app = express();
 
@@ -29,5 +30,29 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/projects', projectRoutes);
 app.use('/api/v1/tasks', taskRoutes);
 app.use('/api/v1/comments', commentRoutes);
+
+app.use((err, req, res, next) => {
+    if (err instanceof ApiError) {
+        return res.status(err.statusCode).json({
+            success: err.success,
+            message: err.message,
+            errors: err.errors,
+            data: err.data,
+            ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+        });
+    }
+
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "Something went wrong";
+
+    return res.status(statusCode).json({
+        success: false,
+        message: message,
+        errors: [],
+        data: null,
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    });
+});
+
 
 export { app };

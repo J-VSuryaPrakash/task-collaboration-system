@@ -192,10 +192,72 @@ const getTask = asyncHandler(async(req,res) => {
 
 }) 
 
+const assignTaskToMember = asyncHandler(async(req, res) => {
+
+    const assignedBy = req.user.id
+    const {taskId, userName} = req.body
+
+    const task = await Task.findByPk(taskId,{
+        include:[{
+            model: Project,
+            attributes: ['id','projectName','projectLead',]
+        },
+        {
+            model: User,
+            as: 'assignedToUser',
+            attributes:['id','userName']
+        },
+        {
+            model: User,
+            as: 'assignedByUser',
+            attributes:['id','userName']
+        }]    
+    })
+
+    if(!task){
+        throw new ApiError(404,"Task Not found")
+    }
+
+    const projectLead = task.Project.projectLead
+    
+    if(projectLead !== assignedBy){
+        throw new ApiError(400,"You are not allowed to assign task")
+    }
+
+    const assignedToUser = await User.findOne({
+        where:{userName},
+        attributes: ['id','userName','email']
+    })
+
+    if (!assignedToUser) {
+        throw new ApiError(404, "User to assign not found");
+    }
+
+    const assignedTo = assignedToUser.id
+    console.log(assignedBy)
+
+    await task.update({
+        assignedBy,
+        assignedTo
+    })
+
+    const updatedTask = await Task.findByPk(taskId,{
+        include:[
+            { model: User, as: "assignedToUser", attributes: ["id", "userName", "email"] },
+            { model: User, as: "assignedByUser", attributes: ["id", "userName", "email"] },
+        ]
+    })
+
+    return res.status(200).json(
+        new ApiResponse(200, updatedTask, "Task assigned successfully")
+    );
+})
+
 export {
     assignTask,
     updateTask,
     deleteTask,
     getTask,
-    fetchAllTasks
+    fetchAllTasks,
+    assignTaskToMember
 }
